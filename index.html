@@ -100,7 +100,9 @@ footer .soc a{color:var(--gold);border:1px solid #333;width:46px;height:46px;bor
 .buy:disabled,.qty button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
 .card.sold .cap img,.card.sold .cap svg{filter:grayscale(1) brightness(.6)}
 .card.sold:hover{border-color:#262626;box-shadow:none}
-.legal{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 64px);padding:0 20px;text-align:center;color:#888;font-size:15px;line-height:1.5}
+.legal{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);padding:0 20px;text-align:center;color:#888;font-size:15px;line-height:1.5}
+.sound .tap{display:none}
+#intro .tap{margin:18px 0 0;font-size:15px;color:#888;max-width:none}
 .linkbtn{background:none;border:0;font:inherit;color:var(--gold);text-decoration:underline;cursor:pointer;padding:6px 4px}
 #info{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88)}
 #info.open{display:flex}
@@ -139,6 +141,7 @@ footer .soc a{color:var(--gold);border:1px solid #333;width:46px;height:46px;bor
   <h1 class="gold">Adrian Hats</h1>
   <p>Marca de gorras premium de alta calidad. Estilo, actitud y autenticidad en cada pieza.</p>
   <button class="btn" id="enter">Entrar</button>
+  <p class="tap">Toca la pantalla para activar la música</p>
   <div class="legal">© 2026 Adrian Hats. Derechos de autor reservados por Adrian Hats.<br><button class="linkbtn" data-info>Más información</button></div>
 </div>
 
@@ -299,6 +302,26 @@ const COIN=spr(80,80,g=>{
   g.fillStyle='#8a5d0c';g.textAlign='center';g.textBaseline='middle';g.font='bold 34px Georgia,serif';g.fillText('$',40,42);
 });
 function mk(r){const b=Math.random()<.6;return{t:b?'b':'c',x:Math.random()*W,y:r?Math.random()*H:-60,v:Math.random()*1.2+.7,a:Math.random()*6,rot:Math.random()*6,vr:(Math.random()-.5)*.03,f:Math.random()*6,sc:b?Math.random()*.25+.35:Math.random()*.2+.3}}
+// Rayos en la pantalla de entrada
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let bolts=[],flash=0,nextBolt=30;
+function makeBolt(){
+  const p=[];let x=W*(.1+Math.random()*.8),y=0;const ty=H*(.45+Math.random()*.45);p.push([x,y]);
+  while(y<ty){y+=12+Math.random()*28;x+=(Math.random()-.5)*50;p.push([x,y])}
+  const br=[];
+  for(let k=0;k<3;k++){const i=(Math.random()*p.length*.8|0)+1,d=Math.random()<.5?-1:1;let bx=p[i][0],by=p[i][1];const b=[[bx,by]];for(let j=0;j<6;j++){bx+=d*(8+Math.random()*24);by+=8+Math.random()*22;b.push([bx,by])}br.push(b)}
+  bolts.push({p,br,life:1});flash=.3;
+}
+function stroke(p){cx.beginPath();p.forEach((q,i)=>i?cx.lineTo(q[0],q[1]):cx.moveTo(q[0],q[1]));cx.stroke()}
+function lightning(){
+  if(RM)return;
+  if(!document.body.classList.contains('in')&&--nextBolt<=0){makeBolt();if(Math.random()<.4)setTimeout(makeBolt,130);nextBolt=90+Math.random()*180}
+  if(flash>0){cx.globalAlpha=flash;cx.fillStyle='#cfe3ff';cx.fillRect(0,0,W,H);flash-=.02}
+  bolts=bolts.filter(b=>b.life>0);
+  bolts.forEach(b=>{cx.globalAlpha=Math.max(0,b.life)*(Math.random()<.3?.45:1);cx.shadowColor='#8fc1ff';cx.shadowBlur=22;cx.strokeStyle='#fff';cx.lineJoin='round';
+    cx.lineWidth=2.6;stroke(b.p);cx.lineWidth=1.2;b.br.forEach(stroke);b.life-=.04});
+  cx.shadowBlur=0;cx.globalAlpha=1;
+}
 function draw(){
   cx.clearRect(0,0,W,H);
   stars.forEach(s=>{s.t+=.03;cx.globalAlpha=.4+.6*Math.abs(Math.sin(s.t));cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill()});
@@ -308,29 +331,31 @@ function draw(){
     cx.save();cx.translate(m.x,m.y);cx.rotate(m.rot);cx.scale(m.t==='c'?Math.max(.2,c):1,m.t==='b'?.6+.4*c:1);
     cx.drawImage(img,-w/2,-h/2,w,h);cx.restore();
     if(m.y>H+60)items[i]=mk(false)});
+  lightning();
   requestAnimationFrame(draw)}
 addEventListener('resize',size);size();
 if(!matchMedia('(prefers-reduced-motion:reduce)').matches)draw();else{size();draw()}
 
 // Música (sintetizada, sin archivos). Para usar tu propio MP3 pon musica.mp3 en el repo.
-let ac,playing=false,timer,audioEl=new Audio(MUSICA);
+let playing=false,audioEl=new Audio(MUSICA);
 audioEl.preload='auto';audioEl.loop=true;audioEl.volume=.6;
-audioEl.addEventListener('error',()=>{audioEl=null;if(playing)synth()});
-const notas=[[220,261.6,329.6],[174.6,220,261.6],[196,246.9,293.7],[164.8,207.7,246.9]];
-function acorde(i){
-  notas[i%4].forEach(f=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sawtooth';o.frequency.value=f;
-    const fl=ac.createBiquadFilter();fl.type='lowpass';fl.frequency.value=700;
-    g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(.05,ac.currentTime+1.5);g.gain.linearRampToValueAtTime(0,ac.currentTime+4);
-    o.connect(fl);fl.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+4.1)});
-}
+audioEl.addEventListener('error',()=>{playing=false;$('#music').style.background=''});
 async function startMusic(fromStart){
-  if(audioEl){try{if(fromStart)audioEl.currentTime=0;await audioEl.play();playing=true;$('#music').style.background='#2a2205';return}catch(e){audioEl=null}}
-  synth();playing=true;$('#music').style.background='#2a2205';
+  if(audioEl){try{if(fromStart)audioEl.currentTime=0;await audioEl.play();playing=true;$('#music').style.background='#2a2205';document.body.classList.add('sound')}catch(e){}}
 }
-function synth(){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();let i=0;acorde(i++);clearInterval(timer);timer=setInterval(()=>acorde(i++),3000)}
-function stopMusic(){if(audioEl)audioEl.pause();clearInterval(timer);playing=false;$('#music').style.background=''}
+function stopMusic(){if(audioEl)audioEl.pause();playing=false;$('#music').style.background=''}
 $('#music').onclick=()=>playing?stopMusic():startMusic();
-$('#enter').onclick=()=>{document.body.classList.add('in');scrollTo(0,0);$('#intro').classList.add('out');startMusic(true)};
+$('#enter').onclick=()=>{document.body.classList.add('in');scrollTo(0,0);$('#intro').classList.add('out');startMusic(!playing)};
+// Sonar desde el inicio: se intenta al cargar; si el navegador lo bloquea (iPhone), suena con el primer toque en cualquier parte
+let started=false;
+function arrancar(e){
+  if(started||(e.target.closest&&e.target.closest('#music')))return;
+  started=true;['pointerdown','touchend','click','keydown'].forEach(ev=>removeEventListener(ev,arrancar));
+  if(!playing)startMusic(false);
+}
+if(audioEl)audioEl.play().then(()=>{playing=true;started=true;$('#music').style.background='#2a2205';document.body.classList.add('sound')}).catch(()=>{});
+['pointerdown','touchend','click','keydown'].forEach(ev=>addEventListener(ev,arrancar,{passive:true}));
+
 const info=$('#info');
 document.querySelectorAll('[data-info]').forEach(b=>b.onclick=()=>info.classList.add('open'));
 $('#closeinfo').onclick=()=>info.classList.remove('open');
