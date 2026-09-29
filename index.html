@@ -201,6 +201,7 @@ const PRODUCTOS=[
  {n:"Crimson Limited",p:50,c:"#7a0f1f",stock:7,foto:"img/crimson-limited.jpg",d:"Rojo carmesí numerado, con etiqueta interior de autenticidad."}
 ];
 const WHATSAPP="0000000000"; // tu número con código de país
+const MUSICA="https://archive.org/download/chuyin-x-calle-24-x-jorsshh-amanecido-y-reganado-official-video/Chuyin%20X%20Calle24%20X%20Jorsshh%20-%20Amanecido%20y%20Regan%CC%83ado%20%5BOfficial%20Video%5D.mp3";
 // Códigos de gorras originales (agrega los tuyos)
 const CODIGOS_ORIGINALES=["ADR-0001","ADR-0002","ADR-0003","ADR-1000","ADR-2026"];
 /* ======================== */
@@ -299,7 +300,7 @@ function acorde(i){
     o.connect(fl);fl.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+4.1)});
 }
 async function startMusic(){
-  if(!audioEl){audioEl=new Audio('musica.mp3');audioEl.loop=true;audioEl.volume=.6;audioEl.addEventListener('error',()=>{audioEl=null;synth()})}
+  if(!audioEl){audioEl=new Audio(MUSICA);audioEl.loop=true;audioEl.volume=.6;audioEl.addEventListener('error',()=>{audioEl=null;synth()})}
   try{await audioEl.play()}catch(e){audioEl=null;synth()}
   playing=true;$('#music').style.background='#2a2205';
 }
