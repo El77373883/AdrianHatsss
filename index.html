@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Adrian Hats | Gorras Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#f5c542;--gold2:#ff9d00;--bg:#000;--card:#0d0d0d;--txt:#f4f4f4}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:'Rajdhani',system-ui,sans-serif;font-size:18px;overflow-x:hidden}
+h1,h2,h3,.logo{font-family:'Bungee','Impact',sans-serif;font-weight:400}
+.gold{background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200%;animation:shine 4s linear infinite}
+@keyframes shine{to{background-position:200% 0}}
+#fx{position:fixed;inset:0;z-index:0;pointer-events:none}
+.layer{position:relative;z-index:1}
+svg.i{width:1.3em;height:1.3em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ENTRADA */
+#intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:rgba(0,0,0,.35);transition:opacity .8s,visibility .8s}
+#intro.out{opacity:0;visibility:hidden}
+#intro .top{font-size:clamp(15px,4vw,22px);letter-spacing:.12em;color:#ddd;margin-bottom:18px}
+#intro h1{font-size:clamp(38px,12vw,96px);line-height:1;margin-bottom:14px}
+#intro p{max-width:520px;color:#bbb;margin-bottom:34px}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;font:inherit;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#000;background:linear-gradient(135deg,var(--gold),var(--gold2));padding:16px 40px;border-radius:50px;box-shadow:0 0 30px rgba(245,197,66,.45);transition:transform .2s}
+.btn:active{transform:scale(.96)}
+.btn:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* HEADER + MENÚ */
+header{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:14px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid #222}
+header .logo{font-size:20px}
+.ic-btn{background:none;border:1px solid #333;color:var(--gold);width:44px;height:44px;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+#music{margin-left:auto}
+#drawer{position:fixed;top:0;bottom:0;left:0;width:min(82vw,310px);z-index:60;background:#070707;border-right:1px solid #2a2a2a;transform:translateX(-105%);transition:transform .35s;padding:calc(20px + env(safe-area-inset-top,0px)) 16px 20px;display:flex;flex-direction:column;gap:6px}
+#drawer.open{transform:none}
+#drawer .logo{font-size:22px;margin:6px 8px 18px}
+#drawer a{display:flex;align-items:center;gap:14px;color:var(--txt);text-decoration:none;padding:14px;border-radius:12px;font-weight:700;font-size:19px}
+#drawer a:active,#drawer a:hover{background:#181818;color:var(--gold)}
+#drawer a svg{color:var(--gold)}
+#shade{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:.3s}
+#shade.show{opacity:1;visibility:visible}
+
+/* SECCIONES */
+main{padding-top:calc(74px + env(safe-area-inset-top,0px))}
+section{padding:56px 20px;max-width:1000px;margin:auto;scroll-margin-top:70px}
+.hero{min-height:80vh;display:flex;flex-direction:column;justify-content:center;text-align:center;align-items:center}
+.hero h1{font-size:clamp(34px,9vw,72px);line-height:1.05;margin-bottom:16px}
+.hero p{max-width:520px;color:#bbb;margin-bottom:28px}
+h2{font-size:clamp(26px,6vw,42px);margin-bottom:28px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid #262626;border-radius:18px;overflow:hidden;transition:.25s}
+.card:hover{border-color:var(--gold);transform:translateY(-4px)}
+.cap{height:170px;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#2a2205,#0a0a0a 70%)}
+.cap svg{width:130px;height:auto}
+.card .b{padding:16px}
+.card h3{font-size:18px;margin-bottom:6px}
+.price{color:var(--gold);font-weight:700;font-size:22px}
+.card .btn{width:100%;justify-content:center;margin-top:12px;padding:12px}
+.feat{display:flex;gap:14px;align-items:flex-start;padding:18px;background:var(--card);border:1px solid #262626;border-radius:16px}
+.feat svg{color:var(--gold);width:34px;height:34px}
+.feat b{display:block;font-size:20px;margin-bottom:2px}
+.feat span{color:#aaa}
+
+/* AUTENTICACIÓN */
+.auth{background:var(--card);border:1px solid var(--gold);border-radius:22px;padding:28px 20px;text-align:center;box-shadow:0 0 40px rgba(245,197,66,.12)}
+.auth p{color:#bbb;margin-bottom:18px}
+.auth input{width:100%;max-width:380px;background:#000;border:1px solid #444;color:var(--txt);font:inherit;font-size:20px;letter-spacing:.15em;text-align:center;text-transform:uppercase;padding:14px;border-radius:12px;margin-bottom:14px}
+#res{margin-top:20px;font-weight:700;font-size:20px;min-height:30px;display:flex;justify-content:center;align-items:center;gap:10px}
+#res.ok{color:#3ddc84}#res.no{color:#ff5470}
+
+footer{padding:40px 20px calc(40px + env(safe-area-inset-bottom,0px));text-align:center;color:#777;border-top:1px solid #1c1c1c}
+footer .soc{display:flex;justify-content:center;gap:14px;margin-bottom:16px}
+footer .soc a{color:var(--gold);border:1px solid #333;width:46px;height:46px;border-radius:50%;display:grid;place-items:center}
+/* TIENDA */
+.card,.feat,.auth{opacity:0;transform:translateY(34px);transition:opacity .7s,transform .7s,border-color .25s,box-shadow .25s}
+.card.show,.feat.show,.auth.show{opacity:1;transform:none}
+.card{position:relative;display:flex;flex-direction:column;will-change:transform}
+.card:hover{box-shadow:0 0 34px rgba(245,197,66,.28)}
+.card::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.14) 50%,transparent 65%);transform:translateX(-120%);transition:transform .8s}
+.card:hover::after{transform:translateX(120%)}
+.cap{position:relative;height:210px}
+.cap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.badge{position:absolute;top:12px;right:12px;font-weight:700;font-size:14px;padding:5px 12px;border-radius:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.badge.ok{background:rgba(61,220,132,.2);color:#3ddc84;border:1px solid #3ddc84}
+.badge.low{background:rgba(255,157,0,.2);color:#ffb340;border:1px solid #ff9d00}
+.badge.no{background:rgba(255,84,112,.22);color:#ff5470;border:1px solid #ff5470}
+.card .b{display:flex;flex-direction:column;flex:1}
+.desc{color:#aaa;font-size:16px;line-height:1.35;margin-bottom:12px;flex:1}
+.row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.stk{color:#888;font-size:15px}
+.qty{display:flex;align-items:center;justify-content:space-between;border:1px solid #333;border-radius:12px;padding:4px}
+.qty button{width:44px;height:40px;border:0;border-radius:9px;background:#1a1a1a;color:var(--gold);font-size:22px;cursor:pointer}
+.qty output{font-weight:700;font-size:20px}
+.buy:disabled,.qty button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.card.sold .cap img,.card.sold .cap svg{filter:grayscale(1) brightness(.6)}
+.card.sold:hover{border-color:#262626;box-shadow:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 016 0"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+<symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-insta" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></symbol>
+<symbol id="i-wa" viewBox="0 0 24 24"><path d="M3 21l1.6-5A8.5 8.5 0 1112 20.5a8.4 8.4 0 01-4-1L3 21z"/><path d="M9 9c0 3 3 6 6 6l1-1.5-2-1-1 .8c-1-.4-2-1.400-2.500-2.500l.8-1-1-2L9 9z"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h11v10H2zM13 9h4l4 4v3h-8"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></symbol>
+<symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="i-bad" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="cap" viewBox="0 0 120 80"><path d="M14 52c0-24 20-38 46-38s46 14 46 38z" fill="currentColor" opacity=".9"/><path d="M6 52c30-8 74-8 108 6-6 8-30 10-54 6-24-3-42-6-54-12z" fill="currentColor"/><circle cx="60" cy="14" r="4" fill="#f5c542"/><text x="60" y="42" text-anchor="middle" font-size="11" font-family="Impact,sans-serif" fill="#f5c542">AH</text></symbol>
+</defs></svg>
+
+<canvas id="fx"></canvas>
+
+<!-- ENTRADA -->
+<div id="intro">
+  <div class="top">BIENVENIDOS A</div>
+  <h1 class="gold">Adrian Hats</h1>
+  <p>Marca de gorras premium de alta calidad. Estilo, actitud y autenticidad en cada pieza.</p>
+  <button class="btn" id="enter">Entrar</button>
+</div>
+
+<!-- MENÚ -->
+<header class="layer">
+  <button class="ic-btn" id="burger" aria-label="Abrir menú"><svg class="i"><use href="#i-menu"/></svg></button>
+  <span class="logo gold">Adrian Hats</span>
+  <button class="ic-btn" id="music" aria-label="Música"><svg class="i"><use href="#i-music"/></svg></button>
+</header>
+<div id="shade"></div>
+<nav id="drawer" aria-label="Menú principal">
+  <div class="logo gold">Adrian Hats</div>
+  <a href="#inicio"><svg class="i"><use href="#i-home"/></svg>Inicio</a>
+  <a href="#coleccion"><svg class="i"><use href="#i-bag"/></svg>Colección</a>
+  <a href="#calidad"><svg class="i"><use href="#i-star"/></svg>Calidad</a>
+  <a href="#autenticidad"><svg class="i"><use href="#i-shield"/></svg>Autenticidad</a>
+  <a href="#contacto"><svg class="i"><use href="#i-mail"/></svg>Contacto</a>
+</nav>
+
+<main class="layer">
+  <section id="inicio" class="hero">
+    <h1 class="gold">Gorras premium<br>con estilo real</h1>
+    <p>Diseños exclusivos, materiales de primera y ediciones limitadas. Cada gorra incluye un código para verificar que es original.</p>
+    <a class="btn" href="#coleccion" style="text-decoration:none">Ver colección</a>
+  </section>
+
+  <section id="coleccion">
+    <h2 class="gold">Colección</h2>
+    <div class="grid" id="products"></div>
+  </section>
+
+  <section id="calidad">
+    <h2 class="gold">Calidad Adrian Hats</h2>
+    <div class="grid">
+      <div class="feat"><svg class="i"><use href="#i-star"/></svg><div><b>Materiales premium</b><span>Algodón grueso y bordado de alta densidad.</span></div></div>
+      <div class="feat"><svg class="i"><use href="#i-shield"/></svg><div><b>Garantía de originalidad</b><span>Código único en cada gorra.</span></div></div>
+      <div class="feat"><svg class="i"><use href="#i-truck"/></svg><div><b>Envíos seguros</b><span>Empaque protegido hasta tu puerta.</span></div></div>
+    </div>
+  </section>
+
+  <section id="autenticidad">
+    <h2 class="gold">Verifica tu gorra</h2>
+    <div class="auth">
+      <p>Escribe el código que viene en la etiqueta interior de tu gorra.</p>
+      <input id="code" placeholder="ADR-0000" autocomplete="off" autocapitalize="characters" maxlength="12">
+      <br><button class="btn" id="verify"><svg class="i"><use href="#i-shield"/></svg>Verificar</button>
+      <div id="res" role="status"></div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <h2 class="gold">Contacto</h2>
+    <div class="grid">
+      <a class="feat" href="https://wa.me/0000000000" style="color:inherit;text-decoration:none"><svg class="i"><use href="#i-wa"/></svg><div><b>WhatsApp</b><span>Pedidos y dudas</span></div></a>
+      <a class="feat" href="https://instagram.com/" style="color:inherit;text-decoration:none"><svg class="i"><use href="#i-insta"/></svg><div><b>Instagram</b><span>@adrianhats</span></div></a>
+      <a class="feat" href="mailto:contacto@adrianhats.com" style="color:inherit;text-decoration:none"><svg class="i"><use href="#i-mail"/></svg><div><b>Correo</b><span>contacto@adrianhats.com</span></div></a>
+    </div>
+  </section>
+</main>
+<footer class="layer">© 2026 Adrian Hats. Todos los derechos reservados.</footer>
+
+<script>
+/* ====== EDITA AQUÍ ====== */
+// foto: ruta de tu imagen (ej. "img/black.jpg"). Si la dejas vacía o no existe, se muestra una gorra dibujada.
+// stock: cantidad disponible. Con 0 aparece AGOTADO.
+const PRODUCTOS=[
+ {n:"Classic Black",p:35,c:"#151515",stock:12,foto:"img/classic-black.jpg",d:"Negra total, bordado dorado 3D y ajuste snapback. El básico que combina con todo."},
+ {n:"Gold Edition",p:45,c:"#8a6a10",stock:4,foto:"img/gold-edition.jpg",d:"Edición dorada con visera curva y forro satinado. Producción limitada."},
+ {n:"Royal Blue",p:40,c:"#12306b",stock:0,foto:"img/royal-blue.jpg",d:"Azul rey de algodón grueso, logo bordado en alta densidad."},
+ {n:"Crimson Limited",p:50,c:"#7a0f1f",stock:7,foto:"img/crimson-limited.jpg",d:"Rojo carmesí numerado, con etiqueta interior de autenticidad."}
+];
+const WHATSAPP="0000000000"; // tu número con código de país
+// Códigos de gorras originales (agrega los tuyos)
+const CODIGOS_ORIGINALES=["ADR-0001","ADR-0002","ADR-0003","ADR-1000","ADR-2026"];
+/* ======================== */
+
+const $=s=>document.querySelector(s);
+
+// Productos
+const qty=PRODUCTOS.map(()=>1);
+$('#products').innerHTML=PRODUCTOS.map((x,i)=>{
+  const ag=x.stock<=0,low=!ag&&x.stock<=5;
+  const st=ag?['no','Agotado']:low?['low','Últimas '+x.stock]:['ok','Disponible'];
+  return `<article class="card tilt ${ag?'sold':''}" data-i="${i}">
+   <div class="cap" style="color:${x.c}"><svg viewBox="0 0 120 80"><use href="#cap"/></svg>${x.foto?`<img src="${x.foto}" alt="${x.n}" loading="lazy" onerror="this.remove()">`:''}<span class="badge ${st[0]}">${st[1]}</span></div>
+   <div class="b"><h3>${x.n}</h3><p class="desc">${x.d}</p>
+   <div class="row"><span class="price">$${x.p}</span><span class="stk">${ag?'Sin existencias':x.stock+' en stock'}</span></div>
+   <div class="qty"><button data-a="-" ${ag?'disabled':''} aria-label="Menos">−</button><output>${ag?0:1}</output><button data-a="+" ${ag?'disabled':''} aria-label="Más">+</button></div>
+   <button class="btn buy" data-a="buy" ${ag?'disabled':''}>${ag?'Agotado':'Comprar'}</button></div></article>`}).join('');
+
+$('#products').addEventListener('click',e=>{
+  const b=e.target.closest('button[data-a]');if(!b)return;
+  const c=b.closest('.card'),i=+c.dataset.i,x=PRODUCTOS[i],a=b.dataset.a;
+  if(a==='+')qty[i]=Math.min(x.stock,qty[i]+1);
+  if(a==='-')qty[i]=Math.max(1,qty[i]-1);
+  c.querySelector('output').textContent=qty[i];
+  if(a==='buy'){const t=`Hola, quiero ${qty[i]} gorra(s) ${x.n} ($${x.p*qty[i]} total)`;open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}`,'_blank')}
+});
+
+// Efectos: aparecer al hacer scroll + inclinación 3D
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('show');io.unobserve(en.target)}}),{threshold:.15});
+document.querySelectorAll('.card,.feat,.auth').forEach((el,k)=>{el.style.transitionDelay=(k%4)*80+'ms';io.observe(el)});
+document.querySelectorAll('.tilt').forEach(c=>{
+  c.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(700px) rotateY(${x*12}deg) rotateX(${-y*12}deg) translateY(-6px)`;c.style.setProperty('--mx',(x+.5)*100+'%')});
+  c.addEventListener('pointerleave',()=>{c.style.transform=''});
+});
+
+// Menú
+const dr=$('#drawer'),sh=$('#shade');
+const toggle=o=>{dr.classList.toggle('open',o);sh.classList.toggle('show',o)};
+$('#burger').onclick=()=>toggle(true);sh.onclick=()=>toggle(false);
+dr.querySelectorAll('a').forEach(a=>a.onclick=()=>toggle(false));
+
+// Autenticación
+function verificar(){
+  const v=$('#code').value.trim().toUpperCase(),r=$('#res');
+  if(!v){r.className='';r.textContent='Escribe un código.';return}
+  const ok=CODIGOS_ORIGINALES.includes(v);
+  r.className=ok?'ok':'no';
+  r.innerHTML=`<svg class="i"><use href="#${ok?'i-ok':'i-bad'}"/></svg>`+(ok?'Original Adrian Hats verificada':'Código no válido. Podría no ser original.');
+}
+$('#verify').onclick=verificar;
+$('#code').addEventListener('keydown',e=>{if(e.key==='Enter')verificar()});
+
+// Fondo: dinero cayendo + estrellas
+const cv=$('#fx'),cx=cv.getContext('2d');let W,H,items=[],stars=[];
+function size(){const d=devicePixelRatio||1;W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);
+  stars=Array.from({length:Math.min(120,W/6|0)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,t:Math.random()*6}));
+  items=Array.from({length:Math.min(34,W/22|0)},()=>mk(true))}
+function mk(r){return{x:Math.random()*W,y:r?Math.random()*H:-30,s:Math.random()*16+14,v:Math.random()*1.2+.6,w:Math.random()*2+1,a:Math.random()*6,e:Math.random()<.7?'💵':'🪙'}}
+function draw(){
+  cx.clearRect(0,0,W,H);
+  stars.forEach(s=>{s.t+=.03;cx.globalAlpha=.4+.6*Math.abs(Math.sin(s.t));cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill()});
+  cx.globalAlpha=.85;
+  items.forEach((m,i)=>{m.y+=m.v;m.a+=.02;m.x+=Math.sin(m.a)*.5;
+    cx.font=m.s+'px serif';cx.fillText(m.e,m.x,m.y);
+    if(m.y>H+30)items[i]=mk(false)});
+  requestAnimationFrame(draw)}
+addEventListener('resize',size);size();
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches)draw();else{size();draw()}
+
+// Música (sintetizada, sin archivos). Para usar tu propio MP3 pon musica.mp3 en el repo.
+let ac,playing=false,timer,audioEl;
+const notas=[[220,261.6,329.6],[174.6,220,261.6],[196,246.9,293.7],[164.8,207.7,246.9]];
+function acorde(i){
+  notas[i%4].forEach(f=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sawtooth';o.frequency.value=f;
+    const fl=ac.createBiquadFilter();fl.type='lowpass';fl.frequency.value=700;
+    g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(.05,ac.currentTime+1.5);g.gain.linearRampToValueAtTime(0,ac.currentTime+4);
+    o.connect(fl);fl.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+4.1)});
+}
+async function startMusic(){
+  if(!audioEl){audioEl=new Audio('musica.mp3');audioEl.loop=true;audioEl.volume=.6;audioEl.addEventListener('error',()=>{audioEl=null;synth()})}
+  try{await audioEl.play()}catch(e){audioEl=null;synth()}
+  playing=true;$('#music').style.background='#2a2205';
+}
+function synth(){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();let i=0;acorde(i++);clearInterval(timer);timer=setInterval(()=>acorde(i++),3000)}
+function stopMusic(){if(audioEl)audioEl.pause();clearInterval(timer);playing=false;$('#music').style.background=''}
+$('#music').onclick=()=>playing?stopMusic():startMusic();
+$('#enter').onclick=()=>{$('#intro').classList.add('out');startMusic()};
+</script>
+</body>
+</html>
