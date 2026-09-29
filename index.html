@@ -100,6 +100,15 @@ footer .soc a{color:var(--gold);border:1px solid #333;width:46px;height:46px;bor
 .buy:disabled,.qty button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
 .card.sold .cap img,.card.sold .cap svg{filter:grayscale(1) brightness(.6)}
 .card.sold:hover{border-color:#262626;box-shadow:none}
+.legal{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 64px);padding:0 20px;text-align:center;color:#888;font-size:15px;line-height:1.5}
+.linkbtn{background:none;border:0;font:inherit;color:var(--gold);text-decoration:underline;cursor:pointer;padding:6px 4px}
+#info{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88)}
+#info.open{display:flex}
+.panel{position:relative;width:100%;max-width:520px;max-height:82vh;overflow-y:auto;background:var(--card);border:1px solid var(--gold);border-radius:20px;padding:28px 22px;box-shadow:0 0 40px rgba(245,197,66,.2)}
+.panel h2{font-size:26px;margin-bottom:16px}
+.panel h3{font-size:16px;color:var(--gold);margin:16px 0 4px}
+.panel p{color:#bbb;line-height:1.4}
+.panel .ic-btn{position:absolute;top:12px;right:12px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -130,6 +139,7 @@ footer .soc a{color:var(--gold);border:1px solid #333;width:46px;height:46px;bor
   <h1 class="gold">Adrian Hats</h1>
   <p>Marca de gorras premium de alta calidad. Estilo, actitud y autenticidad en cada pieza.</p>
   <button class="btn" id="enter">Entrar</button>
+  <div class="legal">© 2026 Adrian Hats. Derechos de autor reservados por Adrian Hats.<br><button class="linkbtn" data-info>Más información</button></div>
 </div>
 
 <!-- MENÚ -->
@@ -188,7 +198,19 @@ footer .soc a{color:var(--gold);border:1px solid #333;width:46px;height:46px;bor
     </div>
   </section>
 </main>
-<footer class="layer">© 2026 Adrian Hats. Todos los derechos reservados.</footer>
+<footer class="layer">© 2026 Adrian Hats. Derechos de autor reservados por Adrian Hats.<br><button class="linkbtn" data-info>Más información</button></footer>
+
+<div id="info" role="dialog" aria-modal="true" aria-label="Más información">
+  <div class="panel">
+    <button class="ic-btn" id="closeinfo" aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button>
+    <h2 class="gold">Adrian Hats</h2>
+    <h3>Quiénes somos</h3><p>Marca de gorras premium de alta calidad. Diseños exclusivos y ediciones limitadas.</p>
+    <h3>Autenticidad</h3><p>Cada gorra trae un código único en la etiqueta interior. Verifícalo en la sección Autenticidad.</p>
+    <h3>Pedidos y envíos</h3><p>Los pedidos se hacen por WhatsApp. Enviamos con empaque protegido.</p>
+    <h3>Contacto</h3><p>contacto@adrianhats.com</p>
+    <h3>Aviso legal</h3><p>© 2026 Adrian Hats. Derechos de autor reservados por Adrian Hats. El nombre, el logotipo y los diseños son de la marca. Queda prohibida su reproducción sin autorización.</p>
+  </div>
+</div>
 
 <script>
 /* ====== EDITA AQUÍ ====== */
@@ -291,7 +313,9 @@ addEventListener('resize',size);size();
 if(!matchMedia('(prefers-reduced-motion:reduce)').matches)draw();else{size();draw()}
 
 // Música (sintetizada, sin archivos). Para usar tu propio MP3 pon musica.mp3 en el repo.
-let ac,playing=false,timer,audioEl;
+let ac,playing=false,timer,audioEl=new Audio(MUSICA);
+audioEl.preload='auto';audioEl.loop=true;audioEl.volume=.6;
+audioEl.addEventListener('error',()=>{audioEl=null;if(playing)synth()});
 const notas=[[220,261.6,329.6],[174.6,220,261.6],[196,246.9,293.7],[164.8,207.7,246.9]];
 function acorde(i){
   notas[i%4].forEach(f=>{const o=ac.createOscillator(),g=ac.createGain();o.type='sawtooth';o.frequency.value=f;
@@ -299,15 +323,18 @@ function acorde(i){
     g.gain.setValueAtTime(0,ac.currentTime);g.gain.linearRampToValueAtTime(.05,ac.currentTime+1.5);g.gain.linearRampToValueAtTime(0,ac.currentTime+4);
     o.connect(fl);fl.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+4.1)});
 }
-async function startMusic(){
-  if(!audioEl){audioEl=new Audio(MUSICA);audioEl.loop=true;audioEl.volume=.6;audioEl.addEventListener('error',()=>{audioEl=null;synth()})}
-  try{await audioEl.play()}catch(e){audioEl=null;synth()}
-  playing=true;$('#music').style.background='#2a2205';
+async function startMusic(fromStart){
+  if(audioEl){try{if(fromStart)audioEl.currentTime=0;await audioEl.play();playing=true;$('#music').style.background='#2a2205';return}catch(e){audioEl=null}}
+  synth();playing=true;$('#music').style.background='#2a2205';
 }
 function synth(){ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();let i=0;acorde(i++);clearInterval(timer);timer=setInterval(()=>acorde(i++),3000)}
 function stopMusic(){if(audioEl)audioEl.pause();clearInterval(timer);playing=false;$('#music').style.background=''}
 $('#music').onclick=()=>playing?stopMusic():startMusic();
-$('#enter').onclick=()=>{document.body.classList.add('in');scrollTo(0,0);$('#intro').classList.add('out');startMusic()};
+$('#enter').onclick=()=>{document.body.classList.add('in');scrollTo(0,0);$('#intro').classList.add('out');startMusic(true)};
+const info=$('#info');
+document.querySelectorAll('[data-info]').forEach(b=>b.onclick=()=>info.classList.add('open'));
+$('#closeinfo').onclick=()=>info.classList.remove('open');
+info.onclick=e=>{if(e.target===info)info.classList.remove('open')};
 </script>
 </body>
 </html>
